@@ -4,6 +4,7 @@ class Player:
         self.bossFightHealth = 250
         self.maxHealth = 100
         self.health = self.maxHealth
+        self.isDead = False
         self.base_attack = 10
         self.base_defense = 10
         self.gold = 25

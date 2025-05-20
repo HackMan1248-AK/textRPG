@@ -1,4 +1,8 @@
+from operator import truediv
 import os, random
+from termcolor import  colored
+
+import player
 
 def fight(player, enemy):
     while True:
@@ -21,8 +25,7 @@ def fight(player, enemy):
 def attack(player, enemy):
     os.system('cls')
     PAttack = random.randint(player.attack // 2, player.attack)
-    EAttack = random.randint(enemy.attack // 2, enemy.attack)
-    if PAttack == player.attack // 2:
+    if PAttack <= player.attack // 2:
         print('You miss')
     else:
         enemy.health -= PAttack
@@ -32,16 +35,10 @@ def attack(player, enemy):
         win(player, enemy)
         return True
     os.system('cls')
-    if EAttack == enemy.attack // 2:
-        print(f'The {enemy.name} missed')
-    else:
-        dd = EAttack * 2 - player.defense // 2
-        if dd >= 0:
-            player.health -= EAttack * 2 - player.defense // 2
-        print(f'The {enemy.name} deals {EAttack * 2 - player.defense // 2} damage!')
+    enemy.fight(player)
     input(' ')
     if player.health <= 0:
-        dead()
+        dead(player)
     return False
 
 def drink_potion(player):
@@ -58,10 +55,11 @@ def drink_potion(player):
 
 def run(player, enemy):
     os.system('cls')
-    run_num = random.randint(1, 3)
+    run_num = random.randint(1, 2)
     if run_num == 1:
         print('You have succesfully ran away!')
         input(' ')
+
     else:
         print('You failed to get away!')
         input(' ')
@@ -74,7 +72,7 @@ def run(player, enemy):
             print(f'The {enemy.name} deals {EAttack * 6 - player.defense} damage!')
         input(' ')
         if player.health <= 0:
-            dead()
+            dead(player)
 
 def win(player, enemy):
     os.system('cls')
@@ -87,7 +85,14 @@ def win(player, enemy):
         print(f'{enemy.name} also dropped a potion! You now have {player.pots} potions.')
     input(' ')
 
-def dead():
+def dead(player):
     os.system('cls')
-    print('You died a heroic death!')
+    print(colored('---------------------------------------------------------------------------------------', 'red'))
+    print(colored(f'| When the world lost {player.name}, it fell in despair, and slowly died out.         |', 'red'))
+    print(colored('| The world was never the same again.                                                 |', 'red'))
+    print(colored(f'| People still remember, {player.name} had gone to {player.quests_accepted[0]}        |', 'red'))
+    print(colored(f'| As the people stumbled on the dead body, they found {player.gold} gold, and {player.pots} potions. |', 'red'))
+    print(colored(f'| {player.name} was still holding a {player.current_weapon} and wearing battered {player.current_armor} |', 'red'))
+    print(colored('---------------------------------------------------------------------------------------', 'red'))
+    player.isDead = True
     input(' ')

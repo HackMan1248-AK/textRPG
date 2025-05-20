@@ -7,12 +7,12 @@ from termcolor import  colored
 GoblinIG = Enemy('Goblin', 50, 5, 5, 10)
 ZombieIG = Enemy('Zombie', 100, 10, 10, 20)
 SkeletonIG = Enemy('Skeleton', 100, 10, 10, 20)
-SalamanderIG = Enemy('Salamander', 100, 10, 10, 20, attacks={'Fire Breathe': 10, 'Poison Dart': 7})
+SalamanderIG = Enemy('Salamander', 100, 10, 10, 20, attacks={'Fire Breathe': 102, 'Poison Dart': 72})
 
 weapons = {'Great Sword': 60}
 armor = {'Platinum Armour': 50}
 
-def start1(player_start=player):
+def start1(player_start):
     global player
     player = player_start
     while True:
@@ -46,7 +46,7 @@ def start1(player_start=player):
                 pickle.dump(player, f)
                 print('\nGame Has Been Saved\n')
             input(' ')
-            start1()
+            start1(player)
         elif option == '7':
             sys.exit()
 
@@ -104,54 +104,60 @@ def pre_fight():
         enemy = ZombieIG
     elif enemy_random[0] == 3:
         enemy = SkeletonIG
+    elif enemy_random[0] == 4:
+        enemy = SalamanderIG
     fight(player=player, enemy=enemy)
 
 def store():
     while True:
+        store_items = {'Great Sword': 60, 'Platinum Armour': 50, 'Health Potion': 5}
         os.system('cls')
         print('Welcome to the shop!')
         print('\nWhat would you like to buy?\n')
-        print('Great Sword: 60')
-        print('Platinum Armour: 50')
-        print(colored('Health Potion: 5', 'red'))
-        print('back) Go Back')
+        for item, price in store_items.items():
+            print(f'{list(store_items).index(item) + 1}. {item}: {price}')
+        print('4.  Go Back')
         option = input('-> ')
-        if option in weapons:
-            if player.gold >= weapons[option]:
-                os.system('cls')
-                player.gold -= weapons[option]
-                player.weapon.append(option)
-                print(colored(f'You have bought {option}', 'green'))
-                input(' ')
+        try:
+            int(option)
+            if list(store_items.keys())[int(option) - 1] in weapons:
+                if player.gold >= weapons[list(store_items.keys())[int(option) - 1]]:
+                    os.system('cls')
+                    player.gold -= weapons[list(store_items.keys())[int(option) - 1]]
+                    player.weapon.append(list(store_items.keys())[int(option) - 1])
+                    print(colored(f'You have bought {list(store_items.keys())[int(option) - 1]}', 'green'))
+                    input(' ')
+                else:
+                    os.system('cls')
+                    print(colored("You don't have enough gold!", 'red'))
+                    input(' ')
+            elif list(store_items.keys())[int(option) - 1] in armor:
+                if player.gold >= armor[list(store_items.keys())[int(option) - 1]]:
+                    os.system('cls')
+                    player.gold -= armor[list(store_items.keys())[int(option) - 1]]
+                    player.armor.append(list(store_items.keys())[int(option) - 1])
+                    print(colored(f'You have bought {list(store_items.keys())[int(option) - 1]}', 'green'))
+                    input(' ')
+                else:
+                    os.system('cls')
+                    print(colored("You don't have enough gold!", 'red'))
+                    input(' ')
+            elif option == '3':
+                if player.gold >= 5:
+                    player.gold -= 5
+                    player.pots += 1
+                    os.system('cls')
+                    print(colored('You successfully brought a health potion!', 'green'), f'You have {player.pots} potions now')
+                    input(' ')
             else:
                 os.system('cls')
-                print(colored("You don't have enough gold!", 'red'))
-                input(' ')
-        elif option in armor:
-            if player.gold >= armor[option]:
-                os.system('cls')
-                player.gold -= armor[option]
-                player.armor.append(option)
-                print(colored(f'You have bought {option}', 'green'))
-                input(' ')
-            else:
-                os.system('cls')
-                print(colored("You don't have enough gold!", 'red'))
-                input(' ')
-        elif option == 'Health Potion':
-            if player.gold >= 5:
-                player.gold -= 5
-                player.pots += 1
-                os.system('cls')
-                print(colored('You successfully brought a health potion!', 'green'), f'You have {player.pots} potions now')
-                input(' ')
-        elif option == 'back':
-            start1()
-        else:
-            os.system('cls')
-            print(colored('That item does not exist!', 'red'))
-            option = input(' ')
-            store()
+                print(colored('That item does not exist!', 'red'))
+                option = input(' ')
+                store()
+        except:
+            pass
+        if option == 'back':
+            start1(player)
 
 def pre_quest(questChoice=None):
     while True:
@@ -171,7 +177,7 @@ def pre_quest(questChoice=None):
 
 def explore():
     exploreOptions = ['You see weird colors on the rocks', 'The sky is a unique color today!', 'The trees are there as far as I can see', 'The great hall looks great as always']
-    weights = [1.3, random.randrange(0.7, 1.2), random.randrange(0.5, 1.4), 1]
+    weights = [1.3, random.uniform(0.7, 1.2), random.uniform(0.5, 1.4), 1]
     if not exploreOptions[0] in player.quests_accepted or not exploreOptions[0] in player.quests_completed:
         exploreWhat = random.choices(exploreOptions, weights=weights, k=1)[0]
     else: exploreWhat = random.choice(exploreOptions[1:])
