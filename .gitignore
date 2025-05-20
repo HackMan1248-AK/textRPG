@@ -1,7 +1,4 @@
-__pycache__/enemy.cpython-313.pyc
-__pycache__/fighting.cpython-313.pyc
-__pycache__/names.cpython-313.pyc
-__pycache__/player.cpython-313.pyc
+__pycache__/*
 savefile.txt
 .vscode/settings.json
 .venv/*
