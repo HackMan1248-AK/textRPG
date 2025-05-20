@@ -1,7 +1,7 @@
 import sys, os, pickle, names
 from player import Player
 from rich import traceback
-from startpy import *
+from start import *
 
 #** INITIALIZATION **#
 traceback.install()
